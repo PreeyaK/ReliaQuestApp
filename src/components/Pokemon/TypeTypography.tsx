@@ -1,42 +1,28 @@
-import Typography from "@mui/material/Typography";
+import Typography from "@mui/material/Typography"
 
-export default function TypeTypography({ element }:any) {
-  const getElementColor = (element:any) => {
-    switch (element.toLowerCase()) { 
-      case "fire":
-        return "red";
-      case "water":
-        return "cyan";
-      case "grass":
-        return "darkgreen";
-      case "electric":
-        return "yellow";
-      case "ice":
-        return "lightblue";
-      case "flying":
-            return "darkblue";
-      case "bug":
-            return "brown";
-      case "poison":
-            return "purple";
-      case "ground":
-            return "cadetblue";
-      case "fairy":
-            return "pink";
-      case "fighting":
-            return "magenta";
-      case "steel":
-            return "indigo";
-      case "rock":
-            return "orange";
-      case "ghost":
-            return "green";
-      case "psychic":
-            return "maroon";
-      default:
-        return "gray"; 
-    }
-  };
+interface TypeTypographyProps {
+  element: string;
+}
+
+const typeColors: Record<string,string> = {
+  fire: "red",
+  water: "cyan",
+  grass: "darkgreen",
+  electric: "yellow",
+  ice: "lightblue",
+  flying: "darkblue",
+  bug: "brown",
+  poison: "purple",
+  ground: "cadetblue",
+  fairy: "pink",
+  fighting: "magenta",
+  steel: "indigo",
+  rock: "orange",
+  ghost: "green",
+  psychic: "maroon",
+}
+const TypeTypography: React.FC<TypeTypographyProps> = ({ element })  => {
+  const getElementColor = ( element:string ) => typeColors[element.toLowerCase()] || "gray";
 
   return (
     <Typography
@@ -55,4 +41,6 @@ export default function TypeTypography({ element }:any) {
       {element}
     </Typography>
   );
-}
+};
+
+export default TypeTypography;
