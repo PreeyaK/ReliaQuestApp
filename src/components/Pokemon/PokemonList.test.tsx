@@ -1,147 +1,98 @@
 export {}
-// import React from 'react';
-// import { render, screen, fireEvent } from '@testing-library/react';
-// import { BrowserRouter as Router } from 'react-router-dom';
-// import { PokemonList } from './PokemonList';
-// import { useGetPokemons } from '../../hooks/useGetPokemons';
+// import React from "react";
+// import { render, screen, fireEvent } from "@testing-library/react";
+// import { BrowserRouter } from "react-router-dom";
+// import { PokemonList } from "./PokemonList";
+// import { useGetPokemons } from "../../hooks/useGetPokemons";
 
-// // Mocking useGetPokemons hook
-// jest.mock('../../hooks/useGetPokemons', () => ({
+// jest.mock("../../hooks/useGetPokemons", () => ({
 //   useGetPokemons: jest.fn(),
 // }));
 
-// // Mock data
-// const mockPokemons = [
-//   {
-//     id: '1',
-//     name: 'Bulbasaur',
-//     number: '001',
-//     types: ['Grass', 'Poison'],
-//     image: 'bulbasaur.png',
-//   },
-//   {
-//     id: '4',
-//     name: 'Charmander',
-//     number: '004',
-//     types: ['Fire'],
-//     image: 'charmander.png',
-//   },
-//   {
-//     id: '7',
-//     name: 'Squirtle',
-//     number: '007',
-//     types: ['Water'],
-//     image: 'squirtle.png',
-//   },
-// ];
+// jest.mock("./PokemonModal", () => ({
+//   PokemonModal: ({ pokemonId, onClose }: any) => (
+//     <div data-testid="pokemon-modal">
+//       <p>Pokemon ID: {pokemonId}</p>
+//       <button onClick={onClose}>Close</button>
+//     </div>
+//   ),
+// }));
 
-// describe('PokemonList Component', () => {
+// describe("PokemonList Component", () => {
+//   const mockPokemons = [
+//     {
+//       id: "1",
+//       name: "Bulbasaur",
+//       number: "001",
+//       image: "bulbasaur.png",
+//       types: ["Grass", "Poison"],
+//     },
+//     {
+//       id: "4",
+//       name: "Charmander",
+//       number: "004",
+//       image: "charmander.png",
+//       types: ["Fire"],
+//     },
+//   ];
+
 //   beforeEach(() => {
-//     (useGetPokemons as jest.Mock).mockReturnValue({ pokemons: mockPokemons });
+//     (useGetPokemons as jest.Mock).mockReturnValue({
+//       pokemons: mockPokemons,
+//     });
 //   });
 
-//   test('renders the search box and Pokémon cards', () => {
+//   const renderComponent = () =>
 //     render(
-//       <Router>
+//       <BrowserRouter>
 //         <PokemonList />
-//       </Router>
+//       </BrowserRouter>
 //     );
 
-//     // Check search box
-//     expect(screen.getByPlaceholderText('Search Pokémon by name...')).toBeInTheDocument();
+//   it("renders search box and Pokémon list", () => {
+//     renderComponent();
 
-//     // Check Pokémon cards
-//     expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-//     expect(screen.getByText('Charmander')).toBeInTheDocument();
-//     expect(screen.getByText('Squirtle')).toBeInTheDocument();
+//     expect(screen.getByPlaceholderText("Search Pokémon by name...")).toBeInTheDocument();
+//     expect(screen.getByText("Bulbasaur")).toBeInTheDocument();
+//     expect(screen.getByText("Charmander")).toBeInTheDocument();
 //   });
 
-//   test('filters Pokémon based on search input', () => {
-//     render(
-//       <Router>
-//         <PokemonList />
-//       </Router>
-//     );
+//   it("filters Pokémon based on search query", () => {
+//     renderComponent();
 
-//     // Search for "Char"
-//     const searchBox = screen.getByPlaceholderText('Search Pokémon by name...');
-//     fireEvent.change(searchBox, { target: { value: 'Char' } });
+//     const searchBox = screen.getByPlaceholderText("Search Pokémon by name...");
+//     fireEvent.change(searchBox, { target: { value: "Charmander" } });
 
-//     // Only Charmander should be visible
-//     expect(screen.getByText('Charmander')).toBeInTheDocument();
-//     expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
-//     expect(screen.queryByText('Squirtle')).not.toBeInTheDocument();
+//     expect(screen.getByText("Charmander")).toBeInTheDocument();
+//     expect(screen.queryByText("Bulbasaur")).not.toBeInTheDocument();
 //   });
 
-//   test('renders the Pokémon modal when a Pokémon is selected', () => {
-//     // Mock useParams to simulate selecting a Pokémon
-//     jest.mock('react-router-dom', () => ({
-//       ...jest.requireActual('react-router-dom'),
-//       useParams: jest.fn().mockReturnValue({ id: '1' }),
-//     }));
+//   it("navigates to Pokémon details when a Pokémon is clicked", () => {
+//     renderComponent();
 
-//     render(
-//       <Router>
-//         <PokemonList />
-//       </Router>
-//     );
-
-//     // Modal should display Pokémon details
-//     expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-//     expect(screen.getByText('Element: Grass, Poison')).toBeInTheDocument();
+//     const bulbasaurCard = screen.getByTitle("Bulbasaur");
+//     expect(bulbasaurCard).toHaveAttribute("href", "/pokemon/1");
 //   });
 
-//   test('navigates to the Pokémon details when a card is clicked', () => {
-//     render(
-//       <Router>
-//         <PokemonList />
-//       </Router>
-//     );
+//   it("renders the modal when a Pokémon is selected", () => {
+//     // Mock the useParams hook
+//     jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ id: "1" });
 
-//     // Click on the Charmander card
-//     const charmanderCard = screen.getByText('Charmander');
-//     fireEvent.click(charmanderCard);
+//     renderComponent();
 
-//     // Check if navigation works (use mock navigate if needed)
-//     // Since we're using react-router-dom, check if the URL changes
-//     expect(window.location.pathname).toBe('/pokemon/4');
+//     expect(screen.getByTestId("pokemon-modal")).toBeInTheDocument();
+//     expect(screen.getByText("Pokemon ID: 1")).toBeInTheDocument();
 //   });
 
-//   test('displays the correct Pokémon types in TypeTypography', () => {
-//     render(
-//       <Router>
-//         <PokemonList />
-//       </Router>
-//     );
+//   it("closes the modal when the close button is clicked", () => {
+//     const navigateMock = jest.fn();
+//     jest.spyOn(require("react-router-dom"), "useNavigate").mockReturnValue(navigateMock);
+//     jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ id: "1" });
 
-//     // Check for Pokémon types rendered by TypeTypography
-//     expect(screen.getByText('Grass')).toBeInTheDocument();
-//     expect(screen.getByText('Poison')).toBeInTheDocument();
-//     expect(screen.getByText('Fire')).toBeInTheDocument();
-//     expect(screen.getByText('Water')).toBeInTheDocument();
-//   });
+//     renderComponent();
 
-//   test('closes the modal when closeModal is called', () => {
-//     // Mock useParams to simulate modal open
-//     jest.mock('react-router-dom', () => ({
-//       ...jest.requireActual('react-router-dom'),
-//       useParams: jest.fn().mockReturnValue({ id: '1' }),
-//     }));
+//     fireEvent.click(screen.getByText("Close"));
 
-//     render(
-//       <Router>
-//         <PokemonList />
-//       </Router>
-//     );
-
-//     // Modal is open
-//     expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-
-//     // Simulate modal close
-//     const closeButton = screen.getByText('Close'); // Assuming there's a close button in the modal
-//     fireEvent.click(closeButton);
-
-//     // Modal should close
-//     expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
+//     expect(navigateMock).toHaveBeenCalledWith("/pokemon");
 //   });
 // });
