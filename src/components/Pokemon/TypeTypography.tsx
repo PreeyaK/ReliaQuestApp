@@ -29,7 +29,7 @@ const TypeTypography: React.FC<TypeTypographyProps> = ({ element })  => {
       sx={{
         backgroundColor: getElementColor(element), 
         color: element.toLowerCase() === "electric" ? "black" : "white", 
-        padding: "8px",
+        padding: "3px 13px",
         borderRadius: "4px",
         textAlign: "center",
         fontSize:"12px",
