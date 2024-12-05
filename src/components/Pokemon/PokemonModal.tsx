@@ -143,7 +143,7 @@ const useStyles = createUseStyles(
         closeButton: {
           marginTop: "20px",
           padding: "10px 20px",
-          backgroundColor: "#FF5733",
+          backgroundColor: "#1976d2",
           color: "white",
           border: "none",
           borederRadius: "5px",
