@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useGetPokemons } from '../../hooks/useGetPokemons';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {PokemonModal} from './PokemonModal'
+import { PokemonModal } from './PokemonModal'
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -10,22 +10,31 @@ import CardContent from '@mui/material/CardContent';
 import Grid from "@mui/material/Grid";
 import TypeTypography from './TypeTypography';
 
-export const PokemonList = () => {
+interface Pokemon {
+  id: string;
+  name: string;
+  number: string;
+  image: string;
+  types: string[];
+}
+
+export const PokemonList:React.FC = () => {
   const classes = useStyles();
   const [searchQuery, setSearchQuery] = useState("");
   const { pokemons } = useGetPokemons();
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   
-  const filteredItems = pokemons.filter((pkmn) =>
-    pkmn.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredItems = useMemo(() => 
+    pokemons.filter((pokemon: Pokemon) =>
+      pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [searchQuery, pokemons]);
 
   const closeModal = () => {
     navigate('/pokemon');
   }
 
-  const selectedPokemon = pokemons.find((pkmn)=>pkmn.id === id)
+  const selectedPokemon = pokemons.find((pokemon: Pokemon) => pokemon.id === id);
   
   return (
     <div className={classes.container}>
@@ -37,49 +46,46 @@ export const PokemonList = () => {
         className={classes.searchBox}
       />
       <div className={classes.list}>
-        <Grid container spacing={3} >
-          {filteredItems.map((item:any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
-              <Link to={`/pokemon/${item.id}`} className={classes.cardStyle}>
-                <Card sx={{ 
-                  maxWidth: 345,
-                  backgroundColor: "#171e2b",
-                  border: "1px solid #ddd",
-                  textAlign: "center",
-                  textDecoration:"underline",
-                  "&:hover": {
-                    transform: "scale(1.05)", 
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)", 
-                  },
-                }}>
-                  <CardHeader
-                    title={item.name}
-                    subheader={'#'+item.number}
-                    sx= {{ "& .MuiCardHeader-subheader": {
-                      color: '#777',
-                    } }}
-                  />
-                  <CardMedia
-                    component="img"
-                    height="100"
-                    sx= {{objectFit: "contain", borderRadius: "10px"}}
-                    className="classes.imgStyle"
-                    image={item.image}
-                    alt={item.image} 
-                  />
-                  <CardContent>
-                    {item.types.map((item:any) => (
-                      <TypeTypography element={item} />
-                    ))}
-                  </CardContent>
-                </Card>
-              </Link>
-            </Grid>
-          ))}
-        </Grid>
+      <Grid container spacing={3}>
+        {filteredItems.map((pokemon) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={pokemon.id}>
+            <Link to={`/pokemon/${pokemon.id}`} title={pokemon.name} className={classes.cardStyle}>
+              <Card sx={{
+                maxWidth: 345,
+                backgroundColor: "#171e2b",
+                border: "1px solid #ddd",
+                textAlign: "center",
+                textDecoration: "underline",
+                "&:hover": {
+                  transform: "scale(1.05)", 
+                  boxShadow: "0 8px 16px rgba(0,0,0,0.2)", 
+                },
+              }}>
+                <CardHeader
+                  title={pokemon.name}
+                  subheader={`#${pokemon.number}`}
+                  sx={{ "& .MuiCardHeader-subheader": { color: '#777' } }}
+                />
+                <CardMedia
+                  component="img"
+                  height="100"
+                  sx={{ objectFit: "contain", borderRadius: "10px" }}
+                  image={pokemon.image}
+                  alt={pokemon.name} 
+                />
+                <CardContent>
+                  {pokemon.types.map((type) => (
+                    <TypeTypography key={type} element={type} />
+                  ))}
+                </CardContent>
+              </Card>
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
       </div>
       
-      {id && selectedPokemon &&(
+      {id && selectedPokemon && (
         <PokemonModal 
           pokemonId={selectedPokemon.id}
           pokemonName={selectedPokemon.name}
@@ -93,13 +99,6 @@ export const PokemonList = () => {
 
 const useStyles = createUseStyles(
   {
-    root: {
-      width: '100%',
-      textAlign: 'center',
-      padding: '32px',
-      boxSizing: 'border-box',
-      color: "black",
-    },
     container: {
       padding: "20px",
       margin: "0 auto",
@@ -118,11 +117,6 @@ const useStyles = createUseStyles(
     },
     cardStyle: {
       minWidth: "15%",
-    },
-    imgStyle: {
-      display: "block",
-      margin: "auto",
-      width: "50%",
     },
   },
   { name: 'PokemonList' }
