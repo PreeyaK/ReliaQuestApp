@@ -85,7 +85,7 @@ export const PokemonList:React.FC = () => {
           ))}
         </Grid>
         ) : (
-          <p className={classes.noResults}>No matches found. Please try a different search term. </p>
+          <p className={classes.noResults}>No Pokémon Matched Your Search! </p>
         )}
       </div>
       
