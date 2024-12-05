@@ -105,7 +105,7 @@ export const PokemonModal: React.FC<PokemonModalProps> = ({pokemonId, pokemonNam
 const useStyles = createUseStyles(
     {
       tableStyle: {
-        border: "1px solid white", 
+        border: "1px solid rgba(255, 255, 255, 0.1)", 
         padding: "10px"
       },
       modalOverlay: {
@@ -131,15 +131,14 @@ const useStyles = createUseStyles(
         },
         image: {
           width: "150px",
-          marginBottom: "20px",
         },
         table: {
           width: "100%",
           borderCollapse: "collapse",
-          marginTo: "20px",
+          marginTop: "20px",
         },
         tableRow: {
-          border: '1px solid white',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
         },
         closeButton: {
           marginTop: "20px",
