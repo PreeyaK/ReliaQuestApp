@@ -2,69 +2,101 @@ import { createUseStyles } from 'react-jss';
 import {useGetPokemonsDetails } from '../../hooks/useGetPokemonsDetails'
 import  TypeTypography  from './TypeTypography'
 
-export const PokemonModal = ({pokemonId, pokemonName, onClose}:any) => { 
+interface PokemonModalProps {
+  pokemonId: string;
+  pokemonName: string;
+  onClose: () => void;
+}
+
+interface PokemonData {
+  pokemon: {
+    name: string;
+    number: string;
+    image: string;
+    clasification: string;
+    types: string[];
+    weight: {
+      minimum: string;
+      maximum: string;
+    },
+    height: {
+      minimum: string;
+      maximum: string;
+    },
+    resistant: string[];
+    weakness: string[];
+    fleeRate: string;
+    maxCP: string;
+    maxHP: string;
+  };
+}
+
+export const PokemonModal: React.FC<PokemonModalProps> = ({pokemonId, pokemonName, onClose}) => { 
     const classes = useStyles();
 
     const { data, loading, error } = useGetPokemonsDetails(
-        pokemonId ? pokemonId : null,
-        pokemonName ? pokemonName : null
+        pokemonId,
+        pokemonName
       );
 
     if (loading) return <div className={classes.modalContent}>Loading...</div>;
     if (error) return <div className={classes.modalContent}>Error: {error.message}</div>;
       
     if(!data) return null;
+
+    const { pokemon } = data as PokemonData;
     
     return (
-      <div className={classes.modalOverlay}>
+      <div className={classes.modalOverlay} role="dialog" aria-labelledby="pokemon-modal-title" aria-describedby="pokemon-modal-description">
         <div className={classes.modalContent}>
-          <img src={data.pokemon?.image} alt={data.pokemon?.name} style={{ width: '150px' }} />
-          <h3>{'#'+data.pokemon?.number} {data.pokemon?.name}</h3>
-          <p>{data.pokemon?.classification}</p>            
-          <p>{data.pokemon?.types.map((item:any) => (
-              <TypeTypography element={item} />
+          <img src={data.pokemon?.image} alt={data.pokemon?.name} className={classes.image} />
+          <h3 id="pokemon-modal-title">{'#'+data.pokemon?.number} {data.pokemon?.name}</h3>
+          <p id="pokemon-modal-description">{data.pokemon?.classification}</p>            
+          <div>
+            {pokemon.types.map((type) => (
+              <TypeTypography key={type} element={type} />
             ))}
-          </p>
-          <table style={{ borderCollapse: "collapse", width: "100%", border: "1px solid white", padding: "2px" }}>
-                <th>Category</th>
-                <th className={classes.tableStyle}>Minimun</th>
-                <th>Maximum</th>
-                <tr className={classes.tableStyle}>
-                  <td>Weight</td>
-                  <td className={classes.tableStyle}>{data.pokemon?.weight.minimum}</td>
-                  <td> {data.pokemon?.weight.maximum}</td>
-                </tr>
-                <tr className={classes.tableStyle}>
-                  <td>Height</td>
-                  <td className={classes.tableStyle}>{data.pokemon?.height.minimum}</td>
-                  <td> {data.pokemon?.height.maximum}</td>
-                </tr>
-                <tr className={classes.tableStyle}>
-                  <td>Resistant</td>
-                  <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.resistant.map((item:any) => (
-                    <TypeTypography element={item} />
-                  ))}</td>
-                </tr>
-                <tr className={classes.tableStyle}>
-                  <td>Weakness</td>
-                  <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.weaknesses.map((item:any) => (
-                    <TypeTypography element={item} />
-                  ))}</td>
-                </tr>
-                <tr className={classes.tableStyle}>
-                  <td>Flee Rate</td>
-                  <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.fleeRate}</td>
-                </tr>
-                <tr style={{ border: "1px solid white"}}>
-                  <td>Max CP</td>
-                  <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.maxCP}</td>
-                </tr>
-                <tr className={classes.tableStyle}>
-                  <td>Max HP</td>
-                  <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.maxHP}</td>
-                </tr>
-           </table>
-          <button onClick={onClose}>Close</button>
+          </div>
+          <table className={classes.table}>
+          <tbody>
+            <tr className={classes.tableRow}>
+              <td>Weight</td>
+              <td className={classes.tableRow}>{pokemon.weight.minimum}</td>
+              <td>{pokemon.weight.maximum}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td>Height</td>
+              <td className={classes.tableRow}>{pokemon.height.minimum}</td>
+              <td>{pokemon.height.maximum}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td>Resistant</td>
+              <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.resistant.map((item:any) => (
+                  <TypeTypography element={item} />
+                ))}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td>Weakness</td>
+              <td colSpan={2} className={classes.tableStyle}>{data.pokemon?.weaknesses.map((item:any) => (
+                  <TypeTypography element={item} />
+                ))}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td className={classes.tableRow}>Flee Rate</td>
+              <td colSpan={2}>{pokemon.fleeRate}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td className={classes.tableRow}>Max CP</td>
+              <td colSpan={2}>{pokemon.maxCP}</td>
+            </tr>
+            <tr className={classes.tableRow}>
+              <td className={classes.tableRow}>Max HP</td>
+              <td colSpan={2}>{pokemon.maxHP}</td>
+            </tr>
+          </tbody>
+        </table>
+          
+          <button onClick={onClose} className={classes.closeButton}>Close</button>
       </div>
     </div>
 )
@@ -96,6 +128,27 @@ const useStyles = createUseStyles(
           maxWidth: "500px",
           width: "100%",
           textAlign: "center",
+        },
+        image: {
+          width: "150px",
+          marginBottom: "20px",
+        },
+        table: {
+          width: "100%",
+          borderCollapse: "collapse",
+          marginTo: "20px",
+        },
+        tableRow: {
+          border: '1px solid white',
+        },
+        closeButton: {
+          marginTop: "20px",
+          padding: "10px 20px",
+          backgroundColor: "#FF5733",
+          color: "white",
+          border: "none",
+          borederRadius: "5px",
+          cursoe: "pointer",
         },
     },
     { name: 'PokemonList' }
