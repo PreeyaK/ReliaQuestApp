@@ -46,43 +46,47 @@ export const PokemonList:React.FC = () => {
         className={classes.searchBox}
       />
       <div className={classes.list}>
-      <Grid container spacing={3}>
-        {filteredItems.map((pokemon) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={pokemon.id}>
-            <Link to={`/pokemon/${pokemon.id}`} title={pokemon.name} className={classes.cardStyle}>
-              <Card sx={{
-                maxWidth: 345,
-                backgroundColor: "#171e2b",
-                border: "1px solid #ddd",
-                textAlign: "center",
-                textDecoration: "underline",
-                "&:hover": {
-                  transform: "scale(1.05)", 
-                  boxShadow: "0 8px 16px rgba(0,0,0,0.2)", 
-                },
-              }}>
-                <CardHeader
-                  title={pokemon.name}
-                  subheader={`#${pokemon.number}`}
-                  sx={{ "& .MuiCardHeader-subheader": { color: '#777' } }}
-                />
-                <CardMedia
-                  component="img"
-                  height="100"
-                  sx={{ objectFit: "contain", borderRadius: "10px" }}
-                  image={pokemon.image}
-                  alt={pokemon.name} 
-                />
-                <CardContent>
-                  {pokemon.types.map((type) => (
-                    <TypeTypography key={type} element={type} />
-                  ))}
-                </CardContent>
-              </Card>
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
+        {filteredItems.length > 0 ? (
+          <Grid container spacing={3}>
+            {filteredItems.map((pokemon) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={pokemon.id}>
+                <Link to={`/pokemon/${pokemon.id}`} title={pokemon.name} className={classes.cardStyle}>
+                  <Card sx={{
+                    maxWidth: 345,
+                    backgroundColor: "#171e2b",
+                    border: "2px solid rgba(255, 255, 255, 0.1)",
+                    textAlign: "center",
+                    textDecoration: "underline",
+                    "&:hover": {
+                      transform: "scale(1.05)", 
+                      boxShadow: "0 8px 16px rgba(255, 255, 255, 0.2); ", 
+                    },
+                 }}>
+                  <CardHeader
+                    title={pokemon.name}
+                    subheader={`#${pokemon.number}`}
+                    sx={{ "& .MuiCardHeader-subheader": { color: '#777' } }}
+                  />
+                  <CardMedia
+                    component="img"
+                    height="100"
+                    sx={{ objectFit: "contain", borderRadius: "10px" }}
+                    image={pokemon.image}
+                    alt={pokemon.name} 
+                  />
+                  <CardContent>
+                    {pokemon.types.map((type) => (
+                      <TypeTypography key={type} element={type} />
+                    ))}
+                  </CardContent>
+                </Card>
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+        ) : (
+          <p className={classes.noResults}>No matches found. Please try a different search term. </p>
+        )}
       </div>
       
       {id && selectedPokemon && (
@@ -118,6 +122,12 @@ const useStyles = createUseStyles(
     cardStyle: {
       minWidth: "15%",
     },
+    noResults: {
+      textAlign: "center",
+      color: "rgba(255,255,255,0.7)",
+      fontSize: "18px",
+      marginTop: "20px",
+    }
   },
   { name: 'PokemonList' }
 );
