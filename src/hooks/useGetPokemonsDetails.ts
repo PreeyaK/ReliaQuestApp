@@ -28,7 +28,7 @@ const GET_POKEMONS_DETAILS = gql`
 `;
 
 
-export const useGetPokemonsDetails = (id:any, name:any) => {
+export const useGetPokemonsDetails = (id?:string, name?:string) => {
   const { data, loading, error } = useQuery(GET_POKEMONS_DETAILS, {
     skip: !id || !name,
     variables: { id, name },
