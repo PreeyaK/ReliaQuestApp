@@ -38,9 +38,10 @@ When a user wants to see more information about a Pokémon, they can click on a 
 ### Additional
 I have added styling to types of Pokémon using <TypeTypography /> which is then reused in <PokemonModal /> to display types as well as strength and weakness of the Pokémon data received from the graphql api respone.
 
-# Steps to run application
+### Steps to run application
 
 After clone/download
+
 npm install
 
 npm start
