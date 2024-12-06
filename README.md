@@ -42,6 +42,8 @@ I have added styling to types of Pokémon using <TypeTypography /> which is then
 
 After clone/download
 
+Navigate to src and then execute following commands on the terminal
+
 npm install
 
 npm start
